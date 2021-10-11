@@ -1,0 +1,13 @@
+
+def recursive_max(lst):
+    if len(lst) == 1:
+        return lst[0]
+    Temp = recursive_max(lst[1:])
+    if lst[0] > Temp:
+        return lst[0]
+    else:
+        return Temp
+
+lst = [-2, 1, 99, -8, -4]
+recursive_call = recursive_max(lst)
+print(recursive_call)

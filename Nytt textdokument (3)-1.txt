@@ -1,0 +1,109 @@
+#Filip Hinderup
+def write_too_file(Text_1, Text_2, Text_3, Text_4, Text_5, file_name):
+    variable = file_name.split(".")
+    f = open(variable[0] + "_report.txt", "w")
+    f.write(Text_1 + Text_2 + "\n-------------------------------------------------------\n" + Text_3 + "\n-------------------------------------------------------\n" + Text_4 + "\n-------------------------------------------------------\n" + Text_5)
+    f.close()
+    return "done"
+
+def freq_dict(file_name): #return the frequency of the words
+    Text_1 = ""
+    f = open(file_name)
+    r = f.read()
+    r_split = r.split()
+
+    file_dict = {}
+    count = 0
+    count_dif = 0
+    for word in r_split:
+        word = word.replace(' ', '')
+        word = word.replace('\t', '')
+        word = word.replace('\n', '')
+        count+=1
+        if word not in file_dict:
+            file_dict[word] = 1
+            count_dif +=1
+        else:
+            file_dict[word] +=1
+    f.close()
+    Text_1 = "File " + file_name + " contain " + str(count) + " words in total of which " + str(count_dif) + " are different."
+    return file_dict, count, count_dif, Text_1
+        
+def most_used_word(frequency): #returns the most frequently used word and a sorted dictionary
+    count_two = 0
+    Text_2 = ""
+    sorted_dict = {}
+    for i in range (len(frequency)):
+        Biggest = (max(frequency.values()))
+        for word, number in frequency.items():
+            if number == Biggest:
+                sorted_dict[word] = number
+                frequency.pop(word)
+                break
+    Text_2 = "The most used words are \n\n Word:\t\t Frequency:\n-------------------------------------------------------\n"
+    for word, number in sorted_dict.items():
+        Text_2 = Text_2 + str(word) + "\t\t\t" + str(number) + "\n"
+        count_two +=1
+        if count_two == 10:
+            break
+    return sorted_dict, Text_2
+
+def average_words(freq, all_words, sorted_dict): #returns the average each word is used
+    found = False
+    counter = 0
+    Text_3 = ""
+    average = round(freq / all_words)
+    Text_3 = "average frequency of the word is " + str(average) + ": \n"
+    for word, number in sorted_dict.items():
+        if number == average:
+            Text_3 = Text_3 + word + "\t"
+            found = True
+    while found == False:
+        Text_3 += "There are no words with the correct average frequency, but the closest is:\n"
+        counter+=1
+        for word, number in sorted_dict.items():
+            if number == average + counter:
+                Text_3 = Text_3 + word + "\t"
+                found = True
+            if number == average - counter:
+                Text_3 =  Text_3 + word + "\t"
+                found = True
+    return Text_3
+
+def median_word(sorted_dict, all_count):
+    Text_4 = ""
+    count = 0
+    if all_count % 2 == 1:
+        all_count_div = all_count/2 + 0.5
+        for word, number in sorted_dict.items():
+            if count == all_count_div:
+                nmr_median = number
+            count +=1
+        Text_4 = "The medianword frequency in the text is " + str(nmr_median) + ": \n"
+        for word, number in sorted_dict.items():
+            if number == nmr_median:
+                Text_4 = Text_4 + word + "\t"
+        return Text_4
+    else:
+        return "There are no word in this median value"
+
+def percent(sorted_dict, all_count_word):
+    Text_5 = ""
+    number  = next(iter(sorted_dict.values()))
+    word = next(iter(sorted_dict))
+    percent_nmr = round(number / all_count_word * 100, 2)
+    Text_5 = "The most used word is " + word + " and is " + str(percent_nmr) + "% of the whole text."
+    return Text_5
+
+def main():
+    filename = input("enter the searchway to the file and the name of the file: ")
+    frequency, all_count_word, different_word, Text_1 = freq_dict(filename)
+    sorted_dict, Text_2 = most_used_word(frequency)
+    Text_3 = average_words(all_count_word, different_word, sorted_dict)
+    Text_4 = median_word(sorted_dict, different_word)
+    Text_5 = percent(sorted_dict, all_count_word)
+    write = write_too_file(Text_1, Text_2, Text_3, Text_4, Text_5, filename)
+
+if __name__ == "__main__":
+    main()
+
